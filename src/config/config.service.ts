@@ -56,17 +56,7 @@ export class ConfigService {
     };
   }
 
-  // JWT
-  get jwtConfig() {
-    return {
-      secret: this.configService.get<string>('app.jwt.secret'),
-      expiration: this.configService.get<string>('app.jwt.expiration'),
-      refreshSecret: this.configService.get<string>('app.jwt.refreshSecret'),
-      refreshExpiration: this.configService.get<string>(
-        'app.jwt.refreshExpiration',
-      ),
-    };
-  }
+  // AUTH0
 
   // API
   get apiConfig() {

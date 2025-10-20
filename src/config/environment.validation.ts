@@ -38,6 +38,9 @@ export class EnvironmentVariables {
   @Max(65535)
   PORT!: number;
 
+  @IsString()
+  APP_BASE_URL!: string;
+
   // Database
   @IsString()
   DATABASE_URL!: string;
@@ -73,18 +76,51 @@ export class EnvironmentVariables {
   @Max(65535)
   REDIS_PORT!: number;
 
-  // JWT
+  // Auth0
   @IsString()
-  JWT_SECRET!: string;
+  AUTH0_DOMAIN!: string;
 
   @IsString()
-  JWT_EXPIRATION!: string;
+  AUTH0_TENANT_DOMAIN!: string;
 
   @IsString()
-  JWT_REFRESH_SECRET!: string;
+  AUTH0_AUDIENCE!: string;
 
   @IsString()
-  JWT_REFRESH_EXPIRATION!: string;
+  AUTH0_ISSUER_URL!: string;
+
+  @IsString()
+  AUTH0_FRONTEND_CLIENT_ID!: string;
+
+  @IsString()
+  AUTH0_MANAGEMENT_CLIENT_ID!: string;
+
+  @IsString()
+  AUTH0_MANAGEMENT_CLIENT_SECRET!: string;
+
+  @IsString()
+  AUTH0_MANAGEMENT_AUDIENCE!: string;
+
+  @IsString()
+  AUTH0_OWNER_ROLE_ID!: string;
+
+  @IsString()
+  AUTH0_MANAGER_ROLE_ID!: string;
+
+  @IsString()
+  AUTH0_WAITER_ROLE_ID!: string;
+
+  @IsString()
+  AUTH0_CHEF_ROLE_ID!: string;
+
+  @IsString()
+  AUTH0_GOOGLE_CON_ID!: string;
+
+  @IsString()
+  AUTH0_CUSTOM_CLAIMS_NAMESPACE!: string;
+
+  @IsString()
+  API_INTERNAL_TOKEN!: string;
 
   // API
   @IsString()

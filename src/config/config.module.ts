@@ -3,6 +3,7 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
 
+import { ConfigService } from './config.service';
 import configuration from './configuration';
 import { EnvironmentVariables } from './environment.validation';
 
@@ -40,6 +41,7 @@ function validate(config: Record<string, unknown>) {
       cache: true,
     }),
   ],
-  exports: [NestConfigModule],
+  providers: [ConfigService],
+  exports: [NestConfigModule, ConfigService],
 })
 export class ConfigModule {}

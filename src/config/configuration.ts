@@ -10,6 +10,7 @@ export default registerAs('app', () => {
     // Application
     nodeEnv: env,
     port: parseInt(process.env['PORT'] || '3000', 10),
+    baseUrl: process.env['APP_BASE_URL'] || 'http://localhost:3000', // Add this
     isDevelopment: env === NodeEnvironment.DEVELOPMENT,
     isStaging: env === NodeEnvironment.STAGING,
     isProduction: env === NodeEnvironment.PRODUCTION,
@@ -32,15 +33,32 @@ export default registerAs('app', () => {
       port: parseInt(process.env['REDIS_PORT'] || '6379', 10),
     },
 
-    // JWT
-    jwt: {
-      secret: process.env['JWT_SECRET'],
-      expiration: process.env['JWT_EXPIRATION'],
-      refreshSecret: process.env['JWT_REFRESH_SECRET'],
-      refreshExpiration: process.env['JWT_REFRESH_EXPIRATION'],
+    // Auth0
+    auth0: {
+      domain: process.env['AUTH0_DOMAIN'],
+      tenantDomain: process.env['AUTH0_TENANT_DOMAIN'], // For Management API
+      audience: process.env['AUTH0_AUDIENCE'],
+      issuerUrl: process.env['AUTH0_ISSUER_URL'],
+      frontendClientId: process.env['AUTH0_FRONTEND_CLIENT_ID'], // Frontend app client ID
+      management: {
+        clientId: process.env['AUTH0_MANAGEMENT_CLIENT_ID'],
+        clientSecret: process.env['AUTH0_MANAGEMENT_CLIENT_SECRET'],
+        audience: process.env['AUTH0_MANAGEMENT_AUDIENCE'],
+      },
+      roles: {
+        owner: process.env['AUTH0_OWNER_ROLE_ID'],
+        manager: process.env['AUTH0_MANAGER_ROLE_ID'],
+        waiter: process.env['AUTH0_WAITER_ROLE_ID'],
+        chef: process.env['AUTH0_CHEF_ROLE_ID'],
+      },
+      connections: {
+        default: process.env['AUTH0_GOOGLE_CON_ID'],
+      },
+      customClaimsNamespace: process.env['AUTH0_CUSTOM_CLAIMS_NAMESPACE'],
     },
 
     // API
+    apiInternalToken: process.env['API_INTERNAL_TOKEN'],
     api: {
       prefix: process.env['API_PREFIX'],
       rateLimit: parseInt(process.env['API_RATE_LIMIT'] || '100', 10),

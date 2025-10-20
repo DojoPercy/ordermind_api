@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Auth & Organizations
+// ============================================================================
+
+enum UserRole {
+  OWNER
+  MANAGER
+  WAITER
+  CHEF
+}
+
+model Organization {
+  id         String   @id @default(uuid())
+  auth0OrgId String   @unique
+  name       String
+  slug       String   @unique
+  logoUrl    String?
+  address    String?
+  phone      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  branches    Branch[]
+  users       User[]
+  invitations Invitation[] // Add this line
+
+  @@map("organizations")
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  userBranches UserBranch[]
+  invitations  Invitation[] // Add this line
+  // POS relations: orders, menuItems, inventory, tables, etc.
+
+  @@unique([organizationId, name])
+  @@map("branches")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  auth0UserId    String   @unique
+  email          String   @unique
+  name           String?
+  phone          String?
+  profilePicture String?
+  role           UserRole
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  branches UserBranch[]
+  // POS relations: orders, shifts, etc.
+
+  @@map("users")
+}
+
+model UserBranch {
+  id        String   @id @default(uuid())
+  userId    String
+  branchId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, branchId])
+  @@map("user_branches")
+}
+
+model Invitation {
+  id                String           @id @default(uuid())
+  auth0InvitationId String?          @unique
+  email             String
+  role              UserRole
+  status            InvitationStatus @default(PENDING)
+  createdAt         DateTime         @default(now())
+  expiresAt         DateTime
+  acceptedAt        DateTime?
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  
+  @@index([email, status])
+  @@index([organizationId])
+  @@map("invitations")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
